@@ -11,4 +11,41 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 d <- read.csv("/Users/qingzhizeng/Documents/GitHub/BCS511/data/data.csv")
 ```
 
+# 10/20/21 class assignment: work through RStudio Cloud Primer 2 and Primer 4 on data wrangling. Go through an initial clean-up/formatting of the variables (e.g., reformatting variable types; renaming variables; removing unnecessary variables) [see also dplyr introduction with links to more advanced vignettes; cheat sheet], try to tabulate or visualize one aspect of your data. Push new code to repository, and alert collaborators (incl. instructor).
+
+##dataset: us_contagious_diseases
+
+##variables:
+- disease. A factor containing disease names.
+- state. A factor containing state names.
+- year.
+- weeks_reporting. Number of weeks counts were reported that year.
+- count. Total number of reported cases.
+- population. State population, interpolated for non-census years.
+
+```{r}
+#install.packages("dslabs")
+library(tidyverse)
+library(dslabs)
+head(us_contagious_diseases) #public database
+as_tibble(us_contagious_diseases)
+
+# Which state has the most Hepatitis A cases?
+us_contagious_diseases %>%
+  filter(disease == "Hepatitis A") %>%
+  group_by(state) %>%
+  summarise(total = sum(count), cases_per_year = mean(count)) %>%
+  arrange(desc(total))
+
+
+# plot Hepatitis A cases in NY and KS over the years
+us_contagious_diseases %>%
+    filter(disease == "Hepatitis A",state == "New York" | state == "Kansas") %>%
+    select(year, count, state) %>%
+    ggplot() +
+    geom_line(aes(x = year, y = count, color = state)) +
+    labs(title = "Hepatitis A cases over the years")
+
+```
+
 
